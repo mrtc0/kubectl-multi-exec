@@ -1,28 +1,24 @@
 project_name: kubectl-multi-exec
+
 env:
   - GO111MODULE=on
-before:
-  hooks:
-    - go mod tidy
+
+install:
+  - go install
+
 builds:
-  - main: .
-    binary: git-bump
+  - main: cmd/kubectl-multi-exec.go
+    binary: kubectl-multi_exec
     ldflags:
       - -s -w
       - -X main.Version={{.Version}}
       - -X main.Revision={{.ShortCommit}}
-    env:
-      - CGO_ENABLED=0
-archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    replacements:
-      darwin: darwin
-      linux: linux
-      windows: windows
-      386: i386
-      amd64: x86_64
-    format_overrides:
-      - goos: windows
-        format: zip
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+       - amd64
+
 release:
   prerelease: auto
